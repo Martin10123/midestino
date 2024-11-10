@@ -4,6 +4,7 @@ import { PropTypes } from "prop-types";
 import axios from "axios";
 import { urlGeneral } from "./../helpers/apiUrls";
 import { UsuarioContext } from "./UsuarioContext";
+import toast from "react-hot-toast";
 
 export const PlanesEmpresaProvider = ({ children }) => {
   const { usuarioActivo } = useContext(UsuarioContext);
@@ -52,6 +53,41 @@ export const PlanesEmpresaProvider = ({ children }) => {
     obtenerTodosPlanes();
   }, [usuarioActivo.idEmpresa]);
 
+  const onEnviarValoracion = async (puntuacion, planEmpresa) => {
+    try {
+      const response = await axios.post(
+        `${urlGeneral}/planes/${planEmpresa.id}/valoracion`,
+        null,
+        {
+          params: {
+            clienteId:
+              usuarioActivo.tipoUsuario === "Cliente"
+                ? usuarioActivo.idCliente
+                : usuarioActivo.idEmpresa,
+            puntuacion,
+          },
+        }
+      );
+
+      if (response.data === "Valoración añadida exitosamente") {
+        const updatedPlanes = planesEmpresas.map((plan) =>
+          plan.id === planEmpresa.id
+            ? { ...plan, valoracionPromedio: puntuacion }
+            : plan
+        );
+
+        setPlanesEmpresas(updatedPlanes);
+
+        toast.success("Valoración añadida exitosamente");
+      } else {
+        toast.error("Ocurrió un error al agregar la valoración");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al agregar valoración: " + error.message);
+    }
+  };
+
   return (
     <PlanesEmpresaContext.Provider
       value={{
@@ -59,6 +95,7 @@ export const PlanesEmpresaProvider = ({ children }) => {
         setPlanesEmpresas,
         planesEmpresa,
         setPlanesEmpresa,
+        onEnviarValoracion,
       }}
     >
       {children}

@@ -13,6 +13,9 @@ import retiroBienestar from "./retiroBienestar.jpg";
 import diversionFamilia from "./diversionFamilia.jpg";
 import aventuraSolitario from "./aventuraSolitario.jpg";
 import cenaRomantica from "./cenaRomantica.jpg";
+import borrar from "./borrar.svg";
+import editar from "./editar.svg";
+import comprar from "./comprar.svg";
 
 export {
   empresa,
@@ -30,4 +33,7 @@ export {
   diversionFamilia,
   aventuraSolitario,
   cenaRomantica,
+  borrar,
+  editar,
+  comprar,
 };

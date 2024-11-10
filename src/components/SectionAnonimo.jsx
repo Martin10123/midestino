@@ -11,7 +11,7 @@ export const SectionAnonimo = () => {
                 </h6>
                 <div className="w-full flex-col justify-start lg:items-start items-center gap-3 flex">
                   <h2 className="text-blue-500 text-4xl font-bold font-manrope leading-normal lg:text-start text-center">
-                    ¡BIENVENIDOS A My Trip!
+                    ¡BIENVENIDOS A MY TRIP!
                   </h2>
                   <p className="text-gray-500 text-base font-normal leading-relaxed lg:text-start text-center">
                     Somos una plataforma en crecimiento que busca conectar

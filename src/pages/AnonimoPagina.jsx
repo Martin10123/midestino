@@ -4,8 +4,23 @@ import { Navbar } from "../components/Navbar";
 import { SectionAnonimo } from "../components/SectionAnonimo";
 import { TarjetaPlanesAnonimo } from "../components/TarjetaPlanesPromocional";
 import { planesPromocionales } from "../helpers/TarjetasPromocionales";
+import { useContext } from "react";
+import { UsuarioContext } from "../context/UsuarioContext";
+import { CaruselDeInformacion } from "../components/CaruselDeInformacion";
 
 export const AnonimoPagina = () => {
+  const { usuarioActivo, isUsuarioActivo } = useContext(UsuarioContext);
+
+  const rutas = {
+    Cliente: "/inicio-clientes",
+    Empresa: "/inicio-empresas",
+    Administrador: "/inicio-administradores",
+  };
+
+  const enviarA = !isUsuarioActivo
+    ? "/inicio-clientes"
+    : rutas[usuarioActivo.tipoUsuario] || "/";
+
   return (
     <main>
       <Navbar />
@@ -33,7 +48,7 @@ export const AnonimoPagina = () => {
 
           <div className="flex space-x-4 mt-8">
             <Link
-              to="/inicio-clientes"
+              to={enviarA}
               className="py-3 px-6 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-200"
             >
               Ver Planes
@@ -50,6 +65,8 @@ export const AnonimoPagina = () => {
       </section>
 
       <SectionAnonimo />
+
+      <CaruselDeInformacion />
 
       <section id="planes" className="px-10 py-40 bg-gray-100">
         <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">

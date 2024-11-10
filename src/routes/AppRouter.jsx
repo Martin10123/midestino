@@ -12,6 +12,7 @@ import { NotFound404 } from "./../components/NotFound404";
 import { UsuarioContext } from "./../context/UsuarioContext";
 import { useContext } from "react";
 import { Administrador } from "../pages/Administrador";
+import { PerfilUsuario } from "../pages/PerfilUsuario";
 
 export const AppRouter = () => {
   const { usuarioActivo, isUsuarioActivo } = useContext(UsuarioContext);
@@ -48,6 +49,8 @@ export const AppRouter = () => {
           />
         </>
       )}
+
+      <Route path="/perfil/:id" element={<PerfilUsuario />} />
 
       {usuarioActivo.tipoUsuario === "Empresa" && (
         <>

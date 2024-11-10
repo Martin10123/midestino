@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { ListaOpcionesEmpresa } from "../components/ListaOpcionesEmpresa";
 import { DatosEmpresa } from "./../components/DatosEmpresa";
 import { ContactoEmpresa } from "./../components/ContactoEmpresa";
@@ -11,10 +11,8 @@ import { useForm } from "./../hooks/useForm";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { urlGeneral } from "./../helpers/apiUrls";
-import { UsuarioContext } from "../context/UsuarioContext";
 
 export const RegistroEmpresa = () => {
-  const { setUsuarioActivo, setIsUsuarioActivo } = useContext(UsuarioContext);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(1);
   const { formState, onInputChange } = useForm({
@@ -239,17 +237,11 @@ export const RegistroEmpresa = () => {
       );
 
       if (response.data.valid) {
-        toast.success("Empresa registrada correctamente.");
-
-        localStorage.setItem(
-          "usuarioActivo",
-          JSON.stringify(response.data.empresa)
+        toast.success(
+          "Empresa registrada correctamente. Te notificaremos cuando tu cuenta sea activada por un administrador."
         );
 
-        setUsuarioActivo(response.data.empresa);
-        setIsUsuarioActivo(true);
         navigate("/", { replace: true });
-        toast.success(response.data.empresa.message);
       }
     } catch (error) {
       console.log("Error al registrarse", error.response);

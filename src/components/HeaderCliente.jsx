@@ -23,6 +23,38 @@ export const HeaderCliente = ({ handleOpenModalPresuento, titulo }) => {
 
         {isUsuarioActivo && (
           <div className="flex gap-2">
+            <div
+              id="tooltip-suggest-ideas"
+              role="tooltip"
+              className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
+            >
+              Planes
+              <div className="tooltip-arrow" data-popper-arrow></div>
+            </div>
+
+            <Link
+              to="/inicio-clientes"
+              className="text-white flex items-center p-1 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              <svg
+                className="w-6 h-6 text-gray-800 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 9a3 3 0 0 1 3-3m-2 15h4m0-3c0-4.1 4-4.9 4-9A6 6 0 1 0 6 9c0 4 4 5 4 9h4Z"
+                />
+              </svg>
+            </Link>
+
             <button
               type="button"
               onClick={handleOpenModalPresuento}
@@ -52,39 +84,6 @@ export const HeaderCliente = ({ handleOpenModalPresuento, titulo }) => {
               className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
             >
               Actualizar presupuesto
-              <div className="tooltip-arrow" data-popper-arrow></div>
-            </div>
-
-            <button
-              data-tooltip-target="tooltip-suggest-ideas"
-              data-tooltip-style="light"
-              type="button"
-              className="text-white p-1 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 9a3 3 0 0 1 3-3m-2 15h4m0-3c0-4.1 4-4.9 4-9A6 6 0 1 0 6 9c0 4 4 5 4 9h4Z"
-                />
-              </svg>
-            </button>
-            <div
-              id="tooltip-suggest-ideas"
-              role="tooltip"
-              className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
-            >
-              Sugerir ideas
               <div className="tooltip-arrow" data-popper-arrow></div>
             </div>
 

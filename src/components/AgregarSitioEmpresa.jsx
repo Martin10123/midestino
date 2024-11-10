@@ -6,27 +6,29 @@ import { urlGeneral } from "./../helpers/apiUrls";
 import { PlanesEmpresaContext } from "../context/PlanesEmpresaContext";
 import { useContext } from "react";
 
-export const AgregarSitioEmpresa = ({ handleAbrirModalCrearActividad }) => {
+export const AgregarSitioEmpresa = ({
+  handleAbrirModalCrearActividad,
+  editData,
+}) => {
   const { setPlanesEmpresa } = useContext(PlanesEmpresaContext);
   const { formState, onInputChange } = useForm({
     imagen: null,
-    nombre: "Ejemplo de Restaurante",
-    tipoSitio: "Restaurante",
-    direccion: "Calle Falsa 123",
-    horario: "9:00 AM - 10:00 PM",
-    email: "contacto@ejemplorestaurante.com",
-    pais: "colombia",
-    metodosPagoAceptados: "tarjeta",
-    telefono: "+34 123 456 789",
-    precio: "25",
-    cantidad: "50",
-    informacionGeneral:
-      "Este es un restaurante de comida tradicional con una variada carta de platos locales.",
-    valoracionPromedio: 0,
+    nombre: editData ? editData.nombre : "",
+    tipoSitio: editData ? editData.tipoSitio : "",
+    direccion: editData ? editData.direccion : "",
+    horario: editData ? editData.horario : "9:00 AM - 10:00 PM",
+    email: editData ? editData.email : "",
+    pais: editData ? editData.pais : "",
+    metodosPagoAceptados: editData ? editData.metodosPagoAceptados : "",
+    telefono: editData ? editData.telefono : "",
+    precio: editData ? editData.precio : "",
+    cantidad: editData ? editData.cantidadDisponible : "",
+    informacionGeneral: editData ? editData.informacionGeneral : "",
+    valoracionPromedio: editData ? editData.valoracionPromedio : 0,
   });
 
   const validateForm = () => {
-    if (!formState.imagen) {
+    if (!formState.imagen && !editData) {
       toast.error("La imagen del sitio es obligatoria.");
       return false;
     }
@@ -92,44 +94,67 @@ export const AgregarSitioEmpresa = ({ handleAbrirModalCrearActividad }) => {
     const formData = new FormData();
     formData.append("imagen", formState.imagen);
 
+    const data = {
+      nombre: formState.nombre,
+      tipoSitio: formState.tipoSitio,
+      direccion: formState.direccion,
+      horario: formState.horario,
+      email: formState.email,
+      pais: formState.pais,
+      metodosPagoAceptados: formState.metodosPagoAceptados,
+      telefono: formState.telefono,
+      precio: formState.precio,
+      cantidadDisponible: formState.cantidad,
+      informacionGeneral: formState.informacionGeneral,
+      empresaId: empresaActiva.idEmpresa,
+      fechaRegistro: formatearFecha(),
+    };
+
+    if (editData) {
+      data.id = editData.id; // Se agrega el ID para actualizar
+    }
+
     formData.append(
       "plan",
-      new Blob(
-        [
-          JSON.stringify({
+      new Blob([JSON.stringify(data)], { type: "application/json" })
+    );
+
+    try {
+      const response = editData
+        ? await axios.put(`${urlGeneral}/planes/actualizar`, {
+            ...editData,
             nombre: formState.nombre,
             tipoSitio: formState.tipoSitio,
             direccion: formState.direccion,
             horario: formState.horario,
             email: formState.email,
             pais: formState.pais,
-            metodoPago: formState.metodosPagoAceptados,
+            metodosPagoAceptados: formState.metodosPagoAceptados,
             telefono: formState.telefono,
             precio: formState.precio,
             cantidadDisponible: formState.cantidad,
             informacionGeneral: formState.informacionGeneral,
-            empresaId: empresaActiva.idEmpresa,
-          }),
-        ],
-        { type: "application/json" }
-      )
-    );
-
-    try {
-      const response = await axios.post(
-        urlGeneral + "/planes/agregar",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+          })
+        : await axios.post(`${urlGeneral}/planes/agregar`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
 
       if (response.data.valid) {
-        toast.success("Actividad creada correctamente.");
+        toast.success(
+          editData
+            ? "Actividad actualizada correctamente."
+            : "Actividad creada correctamente."
+        );
 
-        setPlanesEmpresa((planes) => [...planes, response.data.planEmpresa]);
+        setPlanesEmpresa((planes) => {
+          if (editData) {
+            return planes.map((plan) =>
+              plan.id === editData.id ? response.data.planEmpresa : plan
+            );
+          } else {
+            return [...planes, response.data.planEmpresa];
+          }
+        });
 
         handleAbrirModalCrearActividad();
       }
@@ -141,13 +166,18 @@ export const AgregarSitioEmpresa = ({ handleAbrirModalCrearActividad }) => {
     }
   };
 
+  const formatearFecha = () => {
+    const date = new Date();
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  };
+
   return (
     <div className="overflow-y-auto overflow-x-hidden fixed bg-[#00000069] top-0 right-0 left-0 z-50 justify-center flex items-center w-full md:inset-0 h-full max-h-full">
       <div className="relative p-4 w-full max-w-2xl h-[95%]">
         <div className="relative h-full overflow-auto bg-white rounded-lg shadow dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Agregar actividad
+              {editData ? "Actualizar" : "Agregar"} actividad
             </h3>
             <button
               type="button"
@@ -187,6 +217,7 @@ export const AgregarSitioEmpresa = ({ handleAbrirModalCrearActividad }) => {
                   type="file"
                   name="imagen"
                   onChange={onInputChange}
+                  disabled={editData}
                 />
               </div>
               <div className="mb-5">
@@ -380,7 +411,7 @@ export const AgregarSitioEmpresa = ({ handleAbrirModalCrearActividad }) => {
                 type="submit"
                 className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
-                Crear actividad
+                {editData ? "Actualizar" : "Crear"} actividad
               </button>
             </form>
           </div>
@@ -392,4 +423,5 @@ export const AgregarSitioEmpresa = ({ handleAbrirModalCrearActividad }) => {
 
 AgregarSitioEmpresa.propTypes = {
   handleAbrirModalCrearActividad: PropTypes.func.isRequired,
+  editData: PropTypes.object,
 };
